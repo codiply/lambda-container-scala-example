@@ -3,7 +3,6 @@ COPY . /lambda/src/
 WORKDIR /lambda/src/
 RUN sbt assembly
 
-FROM amazon/aws-lambda-java
-COPY --from=builder /lambda/src/target/function.jar /lambda/
-ENTRYPOINT [ "java", "-cp", "/lambda/function.jar", "com.amazonaws.services.lambda.runtime.api.client.AWSLambda" ]
+FROM public.ecr.aws/lambda/java:11
+COPY --from=builder /lambda/src/target/function.jar ${LAMBDA_TASK_ROOT}/lib/
 CMD ["com.example.LambdaHandler::handleRequest"]
